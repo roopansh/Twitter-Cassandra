@@ -135,21 +135,21 @@ def twitter6():
 		""")
 
 
-# def twitter7():
-# 	global session
+def twitter7():
+	global session
 
-# 	try:
-# 		session.execute("TRUNCATE twitter7")
-# 	except Exception as e:
-# 		print('Creating table twitter7')
-# 		session.execute("""
-# 			CREATE TABLE twitter7 (
-#             	date text,
-#             	hashtag text,
-#             	tid text,
-#             	PRIMARY KEY (date, hashtag, tid)
-#             ) WITH CLUSTERING ORDER BY (hashtag ASC, tid ASC);
-# 		""")
+	try:
+		session.execute("TRUNCATE twitter7")
+	except Exception as e:
+		print('Creating table twitter7')
+		session.execute("""
+			CREATE TABLE twitter7 (
+				tid bigint,
+				date text,
+				hashtag text,
+				PRIMARY KEY (date, hashtag)
+			) WITH CLUSTERING ORDER BY (hashtag ASC);
+		""")
 
 
 def populate():
@@ -163,6 +163,7 @@ def populate():
 	insert_stmt_4 = session.prepare("INSERT INTO twitter4 (tid, mention, tweet_text, datetime) VALUES (?,?,?,?)")
 	insert_stmt_5 = session.prepare("INSERT INTO twitter5 (tid, like_count, tweet_text, date) VALUES (?,?,?,?)")
 	insert_stmt_6 = session.prepare("INSERT INTO twitter6 (tid, location, tweet_text) VALUES (?,?,?)")
+	insert_stmt_7 = session.prepare("INSERT INTO twitter7 (tid, date, hashtag) VALUES (?,?,?)")
 
 	# Read & populate dataset
 	dataset = glob.glob("./dataset/*.json")
@@ -231,9 +232,11 @@ def populate():
 				print(e)
 				exit(1)
 
-			# # TABLE 7
+			# TABLE 7
 			# try:
-			# 	session.execute_async(insert_stmt_7, [tid, location, tweet_text])
+			# 	if hashtags is not None:
+			# 		for hashtag in hashtags:
+			# 			session.execute_async(insert_stmt_7, [tid, tweet_date, hashtag])
 			# except Exception as e:
 			# 	print(e)
 			# 	exit(1)
