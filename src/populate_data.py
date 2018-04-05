@@ -2,7 +2,7 @@ from cassandra.cluster import Cluster
 import glob
 import json
 import datetime
-
+from collections import Counter
 
 CLUSTER = ['127.0.0.1']
 KEYSPACE = "roopansh"
@@ -143,13 +143,44 @@ def twitter7():
 	except Exception as e:
 		print('Creating table twitter7')
 		session.execute("""
-			CREATE TABLE twitter7 (
-				tid bigint,
-				date text,
-				hashtag text,
-				PRIMARY KEY (date, hashtag)
-			) WITH CLUSTERING ORDER BY (hashtag ASC);
+				CREATE TABLE twitter7 (
+					hashtag text,
+					date text,
+					like_count bigint,
+					PRIMARY KEY (date, like_count, hashtag)
+				) WITH CLUSTERING ORDER BY ( like_count DESC, hashtag ASC);
 		""")
+
+	# Data Insertion
+	print("Populating twitter7")
+
+	data_to_populate = {}
+	dataset = glob.glob("./dataset/*.json")
+	for file in dataset:
+		with open(file, 'r') as f:
+			data = json.load(f)
+
+		for tweet in data:
+			hashtags = data[tweet]['hashtags']
+			tweet_date = data[tweet]['date']
+			dates = [tweet_date]
+			for x in range(1,7):
+				datetime_object = datetime.datetime.strptime(tweet_date, '%Y-%m-%d')
+				datetime_object = datetime_object + datetime.timedelta(days=x)
+				dates.append(datetime_object.strftime('%Y-%m-%d'))
+
+			for date in dates :
+				if date not in data_to_populate:
+					data_to_populate[date] = Counter()
+				if hashtags is not None:
+					for hashtag in hashtags:
+						data_to_populate[date][hashtag] += 1
+
+	insert_stmt = session.prepare("INSERT INTO twitter7 (date, hashtag, like_count) VALUES (?,?,?)")
+	for date in data_to_populate:
+		for hashtag in data_to_populate[date]:
+			print(date, hashtag, data_to_populate[date][hashtag])
+			session.execute(insert_stmt, [date, hashtag, data_to_populate[date][hashtag]])
 
 
 def populate():
@@ -163,7 +194,6 @@ def populate():
 	insert_stmt_4 = session.prepare("INSERT INTO twitter4 (tid, mention, tweet_text, datetime) VALUES (?,?,?,?)")
 	insert_stmt_5 = session.prepare("INSERT INTO twitter5 (tid, like_count, tweet_text, date) VALUES (?,?,?,?)")
 	insert_stmt_6 = session.prepare("INSERT INTO twitter6 (tid, location, tweet_text) VALUES (?,?,?)")
-	insert_stmt_7 = session.prepare("INSERT INTO twitter7 (tid, date, hashtag) VALUES (?,?,?)")
 
 	# Read & populate dataset
 	dataset = glob.glob("./dataset/*.json")
@@ -184,62 +214,55 @@ def populate():
 			hashtags = data[tweet]['hashtags']
 			mentions = data[tweet]['mentions']
 
-			# TABLE 1
+			# # TABLE 1
 			try:
-				session.execute_async(insert_stmt_1, [tid, tweet_text, author, location, lang, tweet_datetime])
+				session.execute(insert_stmt_1, [tid, tweet_text, author, location, lang, tweet_datetime])
 			except Exception as e:
-				print(e)
+				print('twitter1', e)
 				exit(1)
 
 			# TABLE 2
 			try:
 				if keywords is not None:
 					for keyword in keywords:
-						session.execute_async(insert_stmt_2, [tid, keyword, tweet_text, like_count])
+						if keyword != '':
+							session.execute(insert_stmt_2, [tid, keyword, tweet_text, like_count])
 			except Exception as e:
-				print(e)
+				print('twitter2', e, keyword)
 				exit(1)
 
-			# TABLE 3
+			# # TABLE 3
 			try:
 				if hashtags is not None:
 					for hashtag in hashtags:
-						session.execute_async(insert_stmt_3, [tid, hashtag, tweet_text, tweet_datetime])
+						session.execute(insert_stmt_3, [tid, hashtag, tweet_text, tweet_datetime])
 			except Exception as e:
-				print(e)
+				print('twitter3', e)
 				exit(1)
 
-			# TABLE 4
+			# # TABLE 4
 			try:
 				if mentions is not None:
 					for mention in mentions:
-						session.execute_async(insert_stmt_4, [tid, mention, tweet_text, tweet_datetime])
+						session.execute(insert_stmt_4, [tid, mention, tweet_text, tweet_datetime])
 			except Exception as e:
-				print(e)
+				print('twitter4', e)
 				exit(1)
 
-			# TABLE 5
+			# # TABLE 5
 			try:
-				session.execute_async(insert_stmt_5, [tid, like_count, tweet_text, tweet_date])
+				session.execute(insert_stmt_5, [tid, like_count, tweet_text, tweet_date])
 			except Exception as e:
-				print(e)
+				print('twitter5', e)
 				exit(1)
 
-			# TABLE 6
+			# # TABLE 6
 			try:
-				session.execute_async(insert_stmt_6, [tid, location, tweet_text])
+				if location is not None:
+					session.execute(insert_stmt_6, [tid, location, tweet_text])
 			except Exception as e:
-				print(e)
+				print('twitter6', e)
 				exit(1)
-
-			# TABLE 7
-			# try:
-			# 	if hashtags is not None:
-			# 		for hashtag in hashtags:
-			# 			session.execute_async(insert_stmt_7, [tid, tweet_date, hashtag])
-			# except Exception as e:
-			# 	print(e)
-			# 	exit(1)
 
 	print("successfully populated!")
 
@@ -253,7 +276,7 @@ def main():
 	twitter4()
 	twitter5()
 	twitter6()
-	# twitter7()
+	twitter7()
 
 	populate()
 

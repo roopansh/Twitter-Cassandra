@@ -16,8 +16,17 @@ $session  = $cluster->connect($keyspace);
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Satisfy" rel="stylesheet">
 </head>
 <body>
+
+	<nav class="navbar navbar-dark bg-dark">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="/twitter-cassandra/" style="font-family: 'Satisfy', cursive; font-size: 40px;">Twitter-Cassandra</a>
+			</div>
+		</div>
+	</nav>
 
 	<div class="container">
 		<div class="row">
@@ -52,19 +61,10 @@ $session  = $cluster->connect($keyspace);
 				<li>
 					<a data-toggle="tab" href="#t2">TEST 2</a>
 				</li>
-				<li>
-					<a data-toggle="tab" href="#t3">TEST 3</a>
-				</li>
-				<li>
-					<a data-toggle="tab" href="#t4">TEST 4</a>
-				</li>
-				<li>
-					<a data-toggle="tab" href="#t5">TEST 5</a>
-				</li>
 			</ul>
 
 
-	<!-- QUERY 1  -->
+			<!-- QUERY 1  -->
 
 			<div class="tab-content">
 				<div id="q1" class="tab-pane fade in active">
@@ -108,7 +108,7 @@ $session  = $cluster->connect($keyspace);
 									if($_SERVER["REQUEST_METHOD"] == "POST") {
 										if($_POST["submit"] == "q1" && !empty($_POST["author_name"])) {
 											echo "<h1>", $_POST["author_name"], "</h1>";
-											$query = "SELECT * FROM twitter1 WHERE author='" . $_POST["author_name"] . "'";
+											$query = "SELECT * FROM twitter1 WHERE author=$$" . $_POST["author_name"] . "$$";
 											$result = $session->execute(new Cassandra\SimpleStatement ($query));
 											$count = 1;
 											foreach ($result as $row) {
@@ -134,7 +134,7 @@ $session  = $cluster->connect($keyspace);
 				</div>
 
 
-		<!-- QUERY 2  -->
+				<!-- QUERY 2  -->
 
 				<div id="q2" class="tab-pane fade">
 					<h3>
@@ -174,7 +174,7 @@ $session  = $cluster->connect($keyspace);
 									if($_SERVER["REQUEST_METHOD"] == "POST") {
 										if($_POST["submit"] == "q2" && !empty($_POST["keyword"])) {
 											echo "<h1>", $_POST["keyword"], "</h1>";
-											$query = "SELECT * FROM twitter2 WHERE keyword='" . $_POST["keyword"] . "'";
+											$query = "SELECT * FROM twitter2 WHERE keyword=$$" . $_POST["keyword"] . "$$";
 											$result = $session->execute(new Cassandra\SimpleStatement ($query));
 											$count = 1;
 											foreach ($result as $row) {
@@ -197,7 +197,7 @@ $session  = $cluster->connect($keyspace);
 				</div>
 
 
-		<!-- QUERY 3  -->
+				<!-- QUERY 3  -->
 
 				<div id="q3" class="tab-pane fade">
 					<h3>
@@ -237,7 +237,7 @@ $session  = $cluster->connect($keyspace);
 									if($_SERVER["REQUEST_METHOD"] == "POST") {
 										if($_POST["submit"] == "q3" && !empty($_POST["hashtag"])) {
 											echo "<h1>", $_POST["hashtag"], "</h1>";
-											$query = "SELECT * FROM twitter3 WHERE hashtag='" . $_POST["hashtag"] . "'";
+											$query = "SELECT * FROM twitter3 WHERE hashtag=$$" . $_POST["hashtag"] . "$$";
 											$result = $session->execute(new Cassandra\SimpleStatement ($query));
 											$count = 1;
 											foreach ($result as $row) {
@@ -260,7 +260,7 @@ $session  = $cluster->connect($keyspace);
 				</div>
 
 
-		<!-- QUERY 4  -->
+				<!-- QUERY 4  -->
 
 				<div id="q4" class="tab-pane fade">
 					<h3>
@@ -300,7 +300,7 @@ $session  = $cluster->connect($keyspace);
 									if($_SERVER["REQUEST_METHOD"] == "POST") {
 										if($_POST["submit"] == "q4" && !empty($_POST["mention"])) {
 											echo "<h1>", $_POST["mention"], "</h1>";
-											$query = "SELECT * FROM twitter4 WHERE mention='" . $_POST["mention"] . "'";
+											$query = "SELECT * FROM twitter4 WHERE mention=$$" . $_POST["mention"] . "$$";
 											$result = $session->execute(new Cassandra\SimpleStatement ($query));
 											$count = 1;
 											foreach ($result as $row) {
@@ -323,7 +323,7 @@ $session  = $cluster->connect($keyspace);
 				</div>
 
 
-		<!-- QUERY 5  -->
+				<!-- QUERY 5  -->
 
 				<div id="q5" class="tab-pane fade">
 					<h3>
@@ -363,7 +363,7 @@ $session  = $cluster->connect($keyspace);
 									if($_SERVER["REQUEST_METHOD"] == "POST") {
 										if($_POST["submit"] == "q5" && !empty($_POST["date"])) {
 											echo "<h1>", $_POST["date"], "</h1>";
-											$query = "SELECT * FROM twitter5 WHERE date='" . $_POST["date"] . "'";
+											$query = "SELECT * FROM twitter5 WHERE date=$$" . $_POST["date"] . "$$";
 											$result = $session->execute(new Cassandra\SimpleStatement ($query));
 											$count = 1;
 											foreach ($result as $row) {
@@ -386,7 +386,7 @@ $session  = $cluster->connect($keyspace);
 				</div>
 
 
-		<!-- QUERY 6  -->
+				<!-- QUERY 6  -->
 
 				<div id="q6" class="tab-pane fade">
 					<h3>Retrieve all tweets from a given location</h3>
@@ -423,7 +423,7 @@ $session  = $cluster->connect($keyspace);
 									if($_SERVER["REQUEST_METHOD"] == "POST") {
 										if($_POST["submit"] == "q6" && !empty($_POST["location"])) {
 											echo "<h1>", $_POST["location"], "</h1>";
-											$query = "SELECT * FROM twitter6 WHERE location='" . $_POST["location"] . "'";
+											$query = "SELECT * FROM twitter6 WHERE location=$$" . $_POST["location"] . "$$";
 											$result = $session->execute(new Cassandra\SimpleStatement ($query));
 											$count = 1;
 											foreach ($result as $row) {
@@ -445,15 +445,63 @@ $session  = $cluster->connect($keyspace);
 				</div>
 
 
-		<!-- QUERY 7  -->
+				<!-- QUERY 7  -->
 
 				<div id="q7" class="tab-pane fade">
 					<h3>Given a date, retrieve top 20 popular hashtags over the last 7 days. The popularity of a hashtag is determined by its frequency of occurrence over the said period.</h3>
-					<p>To be implemented.</p>
+					<p>
+						<form class="form-horizontal" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); echo '#q7';?>" method="post">
+							<div class="form-group">
+								<label class="control-label col-sm-2" for="date">Date:</label>
+								<div class="col-sm-8">
+									<input type="date" class="form-control" id="date" placeholder="Enter date" name="date" required="">
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-offset-2 col-sm-10">
+									<button type="submit" name="submit" class="btn btn-success btn-lg" value="q7">Submit</button>
+								</div>
+							</div>
+						</form>
+						<hr>
+						<div class="table-responsive">
+							<table class="table table-striped table-bordered table-hover table-condensed">
+								<thead>
+									<tr>
+										<th class="col-md-3">S.No</th>
+										<th class="col-md-6">Hashtag</th>
+										<th class="col-md-3">Likes</th>
+									</tr>
+								</thead>
+								<tbody>
+
+									<?php
+									if($_SERVER["REQUEST_METHOD"] == "POST") {
+										if($_POST["submit"] == "q7" && !empty($_POST["date"])) {
+											echo "<h1>", $_POST["date"], "</h1>";
+											$query = "SELECT * FROM twitter7 WHERE date=$$" . $_POST["date"] . "$$ LIMIT 20;";
+											$result = $session->execute(new Cassandra\SimpleStatement ($query));
+											$count = 1;
+											foreach ($result as $row) {
+												printf("<tr>
+												       <td>%d</td>
+												       <td>%s</td>
+												       <td>%s</td>
+												       </tr>",
+												       $count, $row['hashtag'], $row['like_count']);
+												$count++;
+											}
+										}
+									}
+									?>
+								</tbody>
+							</table>
+						</div>
+					</p>
 				</div>
 
 
-		<!-- QUERY 8  -->
+				<!-- QUERY 8  -->
 
 				<div id="q8" class="tab-pane fade">
 					<h3>Given a date, delete all tweets posted on that day.</h3>
@@ -476,7 +524,7 @@ $session  = $cluster->connect($keyspace);
 						<?php
 						if($_SERVER["REQUEST_METHOD"] == "POST") {
 							if($_POST["submit"] == "q8" && !empty($_POST["date"])) {
-								$query = "DELETE FROM twitter5 WHERE date='" . $_POST["date"] . "'";
+								$query = "DELETE FROM twitter5 WHERE date=$$" . $_POST["date"] . "$$";
 								$result = $session->execute(new Cassandra\SimpleStatement ($query));
 								echo "<h1 class=\"bg-danger col-md-offset-1 col-md-9\"> DELETED ALL TWEETS POSTED ON ", $_POST["date"], ".</h1>";
 							}
@@ -488,9 +536,9 @@ $session  = $cluster->connect($keyspace);
 
 
 
-<!-- MAIN LAB TEST QUERIES -->
+				<!-- MAIN LAB TEST QUERIES -->
 
-		<!-- TEST 1  -->
+				<!-- TEST 1  -->
 
 				<div id="t1" class="tab-pane fade">
 					<h3>QUESTION 1 : ...</h3>
@@ -549,7 +597,7 @@ $session  = $cluster->connect($keyspace);
 				</div>
 
 
-		<!-- TEST 2  -->
+				<!-- TEST 2  -->
 
 				<div id="t2" class="tab-pane fade">
 					<h3>QUESTION 2 : ...</h3>
@@ -606,186 +654,8 @@ $session  = $cluster->connect($keyspace);
 						</div>
 					</p>
 				</div>
-
-
-		<!-- TEST 3  -->
-
-				<div id="t3" class="tab-pane fade">
-					<h3>QUESTION 3 : ...</h3>
-					<hr>
-					<p>
-						<form class="form-horizontal" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); echo '#t3';?>" method="post">
-							<div class="form-group">
-								<label class="control-label col-sm-2" for="input">Input:</label>
-								<div class="col-sm-8">
-									<input type="text" class="form-control" id="input" placeholder="Enter input" name="input" required="">
-								</div>
-							</div>
-							<div class="form-group">
-								<div class="col-sm-offset-2 col-sm-10">
-									<button type="submit" name="submit" class="btn btn-success btn-lg" value="t3">Submit</button>
-								</div>
-							</div>
-						</form>
-
-						<hr>
-
-						<div class="table-responsive">
-							<table class="table table-striped table-bordered table-hover table-condensed">
-								<thead>
-									<tr>
-										<th class="col-md-2">S.No</th>
-										<th class="col-md-3">Tweet ID</th>
-										<th class="col-md-7">Tweet</th>
-									</tr>
-								</thead>
-								<tbody>
-
-									<?php
-									if($_SERVER["REQUEST_METHOD"] == "POST") {
-										if($_POST["submit"] == "t3" && !empty($_POST["input"])) {
-											echo "<h1>", $_POST["input"], "</h1>";
-											// $query = "SELECT * FROM twitter6 WHERE input='" . $_POST["input"] . "'";
-											// $result = $session->execute(new Cassandra\SimpleStatement ($query));
-											// $count = 1;
-											// foreach ($result as $row) {
-											// 	printf("<tr>
-											// 	       <td>%d</td>
-											// 	       <td>%s</td>
-											// 	       <td>%s</td>
-											// 	       </tr>",
-											// 	       $count, $row['tid'], $row['tweet_text']);
-											// 	$count++;
-											// }
-										}
-									}
-									?>
-								</tbody>
-							</table>
-						</div>
-					</p>
-				</div>
-
-<!-- TEST 4  -->
-
-				<div id="t4" class="tab-pane fade">
-					<h3>QUESTION 4 : ...</h3>
-					<hr>
-					<p>
-						<form class="form-horizontal" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); echo '#t4';?>" method="post">
-							<div class="form-group">
-								<label class="control-label col-sm-2" for="input">Input:</label>
-								<div class="col-sm-8">
-									<input type="text" class="form-control" id="input" placeholder="Enter input" name="input" required="">
-								</div>
-							</div>
-							<div class="form-group">
-								<div class="col-sm-offset-2 col-sm-10">
-									<button type="submit" name="submit" class="btn btn-success btn-lg" value="t4">Submit</button>
-								</div>
-							</div>
-						</form>
-
-						<hr>
-
-						<div class="table-responsive">
-							<table class="table table-striped table-bordered table-hover table-condensed">
-								<thead>
-									<tr>
-										<th class="col-md-2">S.No</th>
-										<th class="col-md-3">Tweet ID</th>
-										<th class="col-md-7">Tweet</th>
-									</tr>
-								</thead>
-								<tbody>
-
-									<?php
-									if($_SERVER["REQUEST_METHOD"] == "POST") {
-										if($_POST["submit"] == "t4" && !empty($_POST["input"])) {
-											echo "<h1>", $_POST["input"], "</h1>";
-											// $query = "SELECT * FROM twitter6 WHERE input='" . $_POST["input"] . "'";
-											// $result = $session->execute(new Cassandra\SimpleStatement ($query));
-											// $count = 1;
-											// foreach ($result as $row) {
-											// 	printf("<tr>
-											// 	       <td>%d</td>
-											// 	       <td>%s</td>
-											// 	       <td>%s</td>
-											// 	       </tr>",
-											// 	       $count, $row['tid'], $row['tweet_text']);
-											// 	$count++;
-											// }
-										}
-									}
-									?>
-								</tbody>
-							</table>
-						</div>
-					</p>
-				</div>
-
-<!-- TEST 5  -->
-
-				<div id="t5" class="tab-pane fade">
-					<h3>QUESTION 5 : ...</h3>
-					<hr>
-					<p>
-						<form class="form-horizontal" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); echo '#t5';?>" method="post">
-							<div class="form-group">
-								<label class="control-label col-sm-2" for="input">Input:</label>
-								<div class="col-sm-8">
-									<input type="text" class="form-control" id="input" placeholder="Enter input" name="input" required="">
-								</div>
-							</div>
-							<div class="form-group">
-								<div class="col-sm-offset-2 col-sm-10">
-									<button type="submit" name="submit" class="btn btn-success btn-lg" value="t5">Submit</button>
-								</div>
-							</div>
-						</form>
-
-						<hr>
-
-						<div class="table-responsive">
-							<table class="table table-striped table-bordered table-hover table-condensed">
-								<thead>
-									<tr>
-										<th class="col-md-2">S.No</th>
-										<th class="col-md-3">Tweet ID</th>
-										<th class="col-md-7">Tweet</th>
-									</tr>
-								</thead>
-								<tbody>
-
-									<?php
-									if($_SERVER["REQUEST_METHOD"] == "POST") {
-										if($_POST["submit"] == "t5" && !empty($_POST["input"])) {
-											echo "<h1>", $_POST["input"], "</h1>";
-											// $query = "SELECT * FROM twitter6 WHERE input='" . $_POST["input"] . "'";
-											// $result = $session->execute(new Cassandra\SimpleStatement ($query));
-											// $count = 1;
-											// foreach ($result as $row) {
-											// 	printf("<tr>
-											// 	       <td>%d</td>
-											// 	       <td>%s</td>
-											// 	       <td>%s</td>
-											// 	       </tr>",
-											// 	       $count, $row['tid'], $row['tweet_text']);
-											// 	$count++;
-											// }
-										}
-									}
-									?>
-								</tbody>
-							</table>
-						</div>
-					</p>
-				</div>
-
 			</div>
 		</div>
-
-
 	</div>
 
 	<script type="text/javascript">
